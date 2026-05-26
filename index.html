@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <title>我的雲端自我介紹</title>
+  </head>
+  <body>
+    <h1>你好，我是阿哲！</h1>
+    <p>這是一個部署在 AWS 上的 Serverless 自我介紹網站。</p>
+    <p>目前訪客瀏覽次數：<span id="v-count">載入中...</span></p>
+
+    <script>
+      // 定義你的 API Gateway 網址 (記得後面要加 /counter)
+      const apiUrl =
+        "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter";
+
+      async function getVisitorCount() {
+        try {
+          // 使用原生 Fetch API 發送 GET 請求
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            throw new Error("網路回應不成功");
+          }
+
+          // 解析 JSON 回應
+          const data = await response.json();
+
+          // 將網頁上 id 為 v-count 的元素替換為後端傳回的數字
+          document.getElementById("v-count").innerText = data.count;
+        } catch (error) {
+          console.error("撈取訪客計數失敗:", error);
+          document.getElementById("v-count").innerText = "系統維護中";
+        }
+      }
+
+      // 當網頁完全載入後，立刻執行此函式
+      window.onload = getVisitorCount;
+    </script>
+  </body>
+</html>
