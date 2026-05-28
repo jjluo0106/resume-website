@@ -3,20 +3,659 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>首頁 - 作品網站</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>履歷 / 作品集｜Java 工程師（AWS 方向）</title>
+    <meta
+      name="description"
+      content="Java 後端工程師作品集與履歷，聚焦 AWS、雲端與可擴展系統。"
+    />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- 如果你有放靜態檔，仍可保留；目前專案內未包含 css/js，所以改為內嵌樣式確保可用 -->
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}" />
+
+    <style>
+      :root {
+        --bg: #0b1020;
+        --bg2: #070a14;
+        --card: rgba(255, 255, 255, 0.06);
+        --card2: rgba(255, 255, 255, 0.09);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --faint: rgba(255, 255, 255, 0.56);
+        --border: rgba(255, 255, 255, 0.12);
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+        --accent: #7c5cff;
+        --accent2: #23c6ff;
+        --success: #2dd4bf;
+        --warn: #fbbf24;
+        --radius: 18px;
+        --radius2: 12px;
+        --max: 1100px;
+        --ring: 0 0 0 4px rgba(124, 92, 255, 0.22);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f7f8fb;
+          --bg2: #ffffff;
+          --card: rgba(10, 14, 30, 0.04);
+          --card2: rgba(10, 14, 30, 0.06);
+          --text: rgba(10, 14, 30, 0.92);
+          --muted: rgba(10, 14, 30, 0.72);
+          --faint: rgba(10, 14, 30, 0.56);
+          --border: rgba(10, 14, 30, 0.12);
+          --shadow: 0 18px 45px rgba(10, 14, 30, 0.12);
+          --ring: 0 0 0 4px rgba(124, 92, 255, 0.18);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          "PingFang TC",
+          "Noto Sans TC",
+          "Microsoft JhengHei",
+          Arial,
+          sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            1100px 700px at 18% 8%,
+            rgba(124, 92, 255, 0.28),
+            transparent 52%
+          ),
+          radial-gradient(
+            900px 620px at 86% 10%,
+            rgba(35, 198, 255, 0.22),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg), var(--bg2));
+        line-height: 1.6;
+        letter-spacing: 0.1px;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .container {
+        width: min(var(--max), calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      /* Navbar */
+      .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(14px);
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 12, 24, 0.82),
+          rgba(10, 12, 24, 0.54)
+        );
+        border-bottom: 1px solid var(--border);
+      }
+      @media (prefers-color-scheme: light) {
+        .navbar {
+          background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0.5)
+          );
+        }
+      }
+      .navbar .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        gap: 14px;
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 750;
+        letter-spacing: 0.2px;
+        padding: 8px 10px;
+        border-radius: 999px;
+      }
+      .logo-badge {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.16);
+      }
+      .nav-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .nav-menu a {
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 12px;
+        border-radius: 999px;
+        color: var(--muted);
+        border: 1px solid transparent;
+      }
+      .nav-menu a:hover {
+        color: var(--text);
+        background: var(--card);
+        border-color: var(--border);
+      }
+      .nav-menu a.active {
+        color: var(--text);
+        background: linear-gradient(
+          135deg,
+          rgba(124, 92, 255, 0.2),
+          rgba(35, 198, 255, 0.14)
+        );
+        border-color: rgba(124, 92, 255, 0.3);
+      }
+      .admin-link {
+        color: var(--faint);
+      }
+
+      /* Hero */
+      .hero {
+        padding: 54px 0 14px;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 0.9fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .hero-card {
+        border: 1px solid var(--border);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.03)
+        );
+        border-radius: var(--radius);
+        padding: 26px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background:
+          radial-gradient(
+            700px 240px at 10% 0%,
+            rgba(124, 92, 255, 0.22),
+            transparent 60%
+          ),
+          radial-gradient(
+            520px 260px at 92% 22%,
+            rgba(35, 198, 255, 0.18),
+            transparent 55%
+          );
+        pointer-events: none;
+      }
+      .hero-card > * {
+        position: relative;
+      }
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .kicker strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+      .hero h1 {
+        margin: 14px 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.15;
+        letter-spacing: -0.2px;
+      }
+      .subtitle {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 14px 0 0;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .pill b {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .hero-buttons {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-weight: 650;
+        transition:
+          transform 0.12s ease,
+          background 0.12s ease,
+          border-color 0.12s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .btn:focus-visible {
+        outline: none;
+        box-shadow: var(--ring);
+      }
+      .btn-primary {
+        border-color: rgba(124, 92, 255, 0.45);
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: rgba(255, 255, 255, 0.96);
+      }
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #6e4cff, #14b9ff);
+      }
+      .btn-secondary {
+        border-color: rgba(35, 198, 255, 0.35);
+        background: linear-gradient(
+          135deg,
+          rgba(35, 198, 255, 0.18),
+          rgba(124, 92, 255, 0.14)
+        );
+      }
+      .btn-outline {
+        border-style: dashed;
+        color: var(--muted);
+      }
+      .btn-small {
+        padding: 9px 12px;
+        border-radius: 10px;
+        font-weight: 650;
+      }
+
+      /* Right hero panel */
+      .profile-card {
+        border: 1px solid var(--border);
+        background: linear-gradient(
+          180deg,
+          var(--card),
+          rgba(255, 255, 255, 0)
+        );
+        border-radius: var(--radius);
+        padding: 22px;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 14px;
+        align-content: start;
+      }
+      .profile-top {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.96);
+        letter-spacing: 0.5px;
+      }
+      .profile-name {
+        display: grid;
+        gap: 3px;
+      }
+      .profile-name strong {
+        font-size: 16px;
+      }
+      .profile-name span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .mini-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 8px;
+      }
+      .mini-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .mini-list .label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .mini-list .value {
+        color: var(--text);
+        font-weight: 700;
+        font-size: 13px;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0;
+      }
+
+      /* Sections */
+      .section {
+        padding: 34px 0;
+      }
+      .section-title {
+        margin: 0 0 14px;
+        font-size: 22px;
+        letter-spacing: -0.2px;
+      }
+      .section-subtitle {
+        margin: -6px 0 18px;
+        color: var(--muted);
+        max-width: 72ch;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 900px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        border: 1px solid var(--border);
+        background: linear-gradient(
+          180deg,
+          var(--card),
+          rgba(255, 255, 255, 0)
+        );
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .bullets {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        display: grid;
+        gap: 8px;
+      }
+      .bullets b {
+        color: var(--text);
+      }
+
+      /* Tech tags */
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .tag strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      /* Projects */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+      @media (max-width: 1020px) {
+        .projects-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 720px) {
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .project-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: linear-gradient(
+          180deg,
+          var(--card2),
+          rgba(255, 255, 255, 0)
+        );
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: 156px 1fr;
+      }
+      .project-image {
+        position: relative;
+        background:
+          radial-gradient(
+            420px 220px at 20% 30%,
+            rgba(124, 92, 255, 0.22),
+            transparent 55%
+          ),
+          radial-gradient(
+            420px 220px at 85% 30%,
+            rgba(35, 198, 255, 0.18),
+            transparent 55%
+          ),
+          rgba(255, 255, 255, 0.02);
+      }
+      .project-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.92;
+      }
+      .project-content {
+        padding: 16px;
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+      .project-content h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+      .project-content p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tech-tag {
+        font-size: 12px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.04);
+        white-space: nowrap;
+      }
+
+      .empty-state {
+        border: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius);
+        padding: 18px;
+        color: var(--muted);
+      }
+      .empty-state a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      /* Skills */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+      @media (max-width: 1020px) {
+        .skills-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 560px) {
+        .skills-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .skill-item {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: linear-gradient(
+          180deg,
+          var(--card),
+          rgba(255, 255, 255, 0)
+        );
+        padding: 16px;
+      }
+      .skill-item h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+      .skill-item p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--border);
+        padding: 26px 0 40px;
+        color: var(--muted);
+      }
+      .footer p {
+        margin: 6px 0 0;
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+        .btn:hover {
+          transform: none;
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- 導航列 -->
     <nav class="navbar">
       <div class="container">
-        <a th:href="@{/}" class="logo">我的作品集</a>
+        <a href="/" th:href="@{/}" class="logo"
+          ><span class="logo-badge" aria-hidden="true"></span>履歷 / 作品集</a
+        >
         <ul class="nav-menu">
-          <li><a th:href="@{/}" class="active">首頁</a></li>
-          <li><a th:href="@{/projects}">作品</a></li>
-          <li><a th:href="@{/about}">關於</a></li>
-          <li><a th:href="@{/contact}">聯絡</a></li>
-          <li><a th:href="@{/admin}" class="admin-link">管理</a></li>
+          <li><a href="/" th:href="@{/}" class="active">首頁</a></li>
+          <li><a href="/projects" th:href="@{/projects}">作品</a></li>
+          <li><a href="/about" th:href="@{/about}">關於</a></li>
+          <li><a href="/contact" th:href="@{/contact}">聯絡</a></li>
+          <li>
+            <a href="/admin" th:href="@{/admin}" class="admin-link">管理</a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -24,19 +663,143 @@
     <!-- Hero 區塊 -->
     <section class="hero">
       <div class="container">
-        <h1>歡迎來到我的作品集</h1>
-        <p class="subtitle">Java 工程師 | 全端開發者 | 技術愛好者</p>
-        <div class="hero-buttons">
-          <a th:href="@{/projects}" class="btn btn-primary">查看作品</a>
-          <a th:href="@{/contact}" class="btn btn-secondary">聯絡我</a>
+        <div class="hero-grid">
+          <div class="hero-card">
+            <div class="kicker">
+              <strong>AWS 面試向</strong>：後端 / 雲端 / 可擴展系統
+            </div>
+            <h1>Java 後端工程師（AWS 方向）</h1>
+            <p class="subtitle">
+              以「可量化成果」呈現：效能、穩定性、可觀測性、成本與交付效率。
+            </p>
+
+            <div class="hero-meta">
+              <div class="pill"><b>主力</b> Java · Spring Boot</div>
+              <div class="pill"><b>雲端</b> AWS · Docker</div>
+              <div class="pill"><b>資料</b> MySQL · PostgreSQL</div>
+              <div class="pill"><b>交付</b> Git · CI/CD</div>
+            </div>
+
+            <div class="hero-buttons">
+              <a href="/projects" th:href="@{/projects}" class="btn btn-primary"
+                >查看作品</a
+              >
+              <a href="/contact" th:href="@{/contact}" class="btn btn-secondary"
+                >聯絡我</a
+              >
+              <a href="#aws" class="btn btn-outline">AWS 能力一覽</a>
+            </div>
+          </div>
+
+          <aside class="profile-card" aria-label="快速資訊">
+            <div class="profile-top">
+              <div class="avatar" aria-hidden="true">JC</div>
+              <div class="profile-name">
+                <strong>你好，我是阿哲！</strong>
+                <span>這是一個部署在 AWS 上的 Serverless 自我介紹網站。</span>
+              </div>
+            </div>
+
+            <ul class="mini-list">
+              <li>
+                <span class="label">地點</span>
+                <span class="value">台灣 / 可遠端（可自行調整）</span>
+              </li>
+              <li>
+                <span class="label">Email</span>
+                <span class="value">you@example.com</span>
+              </li>
+              <li>
+                <span class="label">GitHub</span>
+                <span class="value">github.com/yourname</span>
+              </li>
+              <li>
+                <span class="label">LinkedIn</span>
+                <span class="value">linkedin.com/in/yourname</span>
+              </li>
+            </ul>
+
+            <div class="card" style="padding: 14px; border-radius: 16px">
+              <h3 style="margin: 0 0 6px; font-size: 14px">訪客瀏覽次數</h3>
+              <p class="note" style="margin: 0">
+                目前訪客瀏覽次數：
+                <span
+                  id="v-count"
+                  aria-live="polite"
+                  style="font-weight: 800; color: var(--text)"
+                  >載入中...</span
+                >
+              </p>
+            </div>
+
+            <p class="note">
+              建議把上述連結換成你的真實資訊；面試官通常會在 30 秒內先看這一塊。
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- 摘要 / 亮點（AWS 面試更友善） -->
+    <section class="section" id="highlights">
+      <div class="container">
+        <h2 class="section-title">摘要亮點（建議保留可量化）</h2>
+        <p class="section-subtitle">
+          把你最想被記住的 3–5 件事放在這裡。先用結果說話，再補做法與技術。
+        </p>
+        <div class="grid-2">
+          <div class="card">
+            <h3>交付與品質</h3>
+            <ul class="bullets">
+              <li>
+                <b>CI/CD</b>：把建置、測試、部署自動化（例如：縮短發布時間
+                X%）。
+              </li>
+              <li>
+                <b>可測性</b>：單元測試 / 整合測試 / 契約測試（用案例說明）。
+              </li>
+              <li><b>可觀測性</b>：日誌、指標、告警與追蹤（SLO/SLI）。</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>雲端與架構</h3>
+            <ul class="bullets">
+              <li>
+                <b>AWS</b>：EC2 / S3 / RDS / IAM / VPC /
+                CloudWatch（按你的實作調整）。
+              </li>
+              <li>
+                <b>效能</b
+                >：快取、資料庫索引、非同步與批次（用指標描述改善幅度）。
+              </li>
+              <li>
+                <b>可靠性</b>：重試、退避、熔斷、冪等、限流（說明設計取捨）。
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tags" id="aws" aria-label="AWS 能力標籤">
+          <span class="tag"><strong>AWS</strong> IAM</span>
+          <span class="tag"><strong>AWS</strong> VPC</span>
+          <span class="tag"><strong>AWS</strong> EC2</span>
+          <span class="tag"><strong>AWS</strong> S3</span>
+          <span class="tag"><strong>AWS</strong> RDS</span>
+          <span class="tag"><strong>AWS</strong> CloudWatch</span>
+          <span class="tag"><strong>Container</strong> Docker</span>
+          <span class="tag"><strong>API</strong> REST</span>
+          <span class="tag"><strong>DB</strong> MySQL / PostgreSQL</span>
         </div>
       </div>
     </section>
 
     <!-- 精選作品區塊 -->
-    <section class="featured-projects">
+    <section class="section featured-projects" id="projects">
       <div class="container">
         <h2 class="section-title">精選作品</h2>
+        <p class="section-subtitle">
+          作品描述建議用「背景 → 你做了什麼 → 成果/指標 → AWS/技術重點」四段式。
+        </p>
 
         <div
           th:if="${featuredProjects != null and !featuredProjects.isEmpty()}"
@@ -61,6 +824,7 @@
                 >
               </div>
               <a
+                href="/projects"
                 th:href="@{/projects/{id}(id=${project.id})}"
                 class="btn btn-small"
                 >查看詳情</a
@@ -74,37 +838,75 @@
           class="empty-state"
         >
           <p>
-            目前沒有精選作品，請前往<a th:href="@{/admin/projects}">管理後台</a
+            目前沒有精選作品，請前往<a
+              href="/admin/projects"
+              th:href="@{/admin/projects}"
+              >管理後台</a
             >新增專案。
           </p>
         </div>
 
         <div class="text-center" style="margin-top: 2rem">
-          <a th:href="@{/projects}" class="btn btn-outline">查看所有作品</a>
+          <a href="/projects" th:href="@{/projects}" class="btn btn-outline"
+            >查看所有作品</a
+          >
         </div>
       </div>
     </section>
 
     <!-- 技能區塊 -->
-    <section class="skills">
+    <section class="section skills" id="skills">
       <div class="container">
-        <h2 class="section-title">技術棧</h2>
+        <h2 class="section-title">技術棧（面試友善分組）</h2>
         <div class="skills-grid">
           <div class="skill-item">
             <h3>後端開發</h3>
-            <p>Java, Spring Boot, Spring MVC, JPA/Hibernate</p>
+            <p>Java, Spring Boot, Spring MVC, JPA/Hibernate, REST API</p>
           </div>
           <div class="skill-item">
-            <h3>前端開發</h3>
-            <p>HTML, CSS, JavaScript, Thymeleaf</p>
+            <h3>雲端（AWS）</h3>
+            <p>IAM, VPC, EC2, S3, RDS, CloudWatch（依你實作調整）</p>
           </div>
           <div class="skill-item">
             <h3>資料庫</h3>
-            <p>MySQL, H2, PostgreSQL</p>
+            <p>MySQL, PostgreSQL, H2（索引 / 交易 / 查詢優化）</p>
           </div>
           <div class="skill-item">
-            <h3>工具與部署</h3>
-            <p>Git, Maven, Docker, Linux</p>
+            <h3>交付與部署</h3>
+            <p>Git, Maven, Docker, Linux, CI/CD（GitHub Actions 等）</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 面試準備區：把內容「收斂成可被問」 -->
+    <section class="section" id="interview">
+      <div class="container">
+        <h2 class="section-title">面試重點（你可直接背的敘事骨架）</h2>
+        <p class="section-subtitle">
+          這區的目標是讓面試官很快找到「可以深入追問」的點，並且你能用同一套框架回答。
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>系統設計（AWS 常問）</h3>
+            <ul class="bullets">
+              <li><b>可用性</b>：多 AZ、備援、健康檢查、藍綠/金絲雀部署。</li>
+              <li>
+                <b>可擴展</b
+                >：無狀態服務、快取策略、資料分片/讀寫分離（視情況）。
+              </li>
+              <li><b>成本</b>：資源選型、Auto Scaling、可觀測性驅動的調整。</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>你最近最有代表性的專案（模板）</h3>
+            <ul class="bullets">
+              <li><b>背景</b>：為什麼做？影響到誰？（1 句）</li>
+              <li><b>做法</b>：你負責的範圍、關鍵設計與取捨（2–3 句）</li>
+              <li><b>成果</b>：延遲/吞吐/錯誤率/成本/交付週期的改善指標</li>
+              <li><b>AWS 連結</b>：用到哪些服務、為什麼這樣選</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -118,6 +920,51 @@
       </div>
     </footer>
 
-    <script th:src="@{/js/main.js}"></script>
+    <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+    <script>
+      // 讓錨點跳轉更順（不影響 prefers-reduced-motion）
+      document.addEventListener("click", (e) => {
+        const a =
+          e.target && e.target.closest
+            ? e.target.closest('a[href^="#"]')
+            : null;
+        if (!a) return;
+        const id = a.getAttribute("href");
+        if (!id || id.length < 2) return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      // 訪客計數（API Gateway /counter）
+      const apiUrl =
+        "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter";
+
+      async function getVisitorCount() {
+        const el = document.getElementById("v-count");
+        if (!el) return;
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const data = await response.json();
+          el.innerText =
+            data && typeof data.count !== "undefined"
+              ? String(data.count)
+              : "—";
+        } catch (error) {
+          console.error("撈取訪客計數失敗:", error);
+          el.innerText = "系統維護中";
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", getVisitorCount);
+    </script>
   </body>
 </html>
