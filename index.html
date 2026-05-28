@@ -695,27 +695,47 @@
             <div class="profile-top">
               <div class="avatar" aria-hidden="true">JC</div>
               <div class="profile-name">
-                <strong>你好，我是阿哲！</strong>
-                <span>這是一個部署在 AWS 上的 Serverless 自我介紹網站。</span>
+                <strong id="profile-name">你好，我是阿哲！</strong>
+                <span id="profile-tagline"
+                  >這是一個部署在 AWS 上的 Serverless 自我介紹網站。</span
+                >
               </div>
             </div>
 
             <ul class="mini-list">
               <li>
                 <span class="label">地點</span>
-                <span class="value">台灣 / 可遠端（可自行調整）</span>
+                <span class="value" id="profile-location"
+                  >台灣 / 可遠端（可自行調整）</span
+                >
               </li>
               <li>
                 <span class="label">Email</span>
-                <span class="value">you@example.com</span>
+                <a class="value" id="profile-email" href="mailto:you@example.com"
+                  >you@example.com</a
+                >
               </li>
               <li>
                 <span class="label">GitHub</span>
-                <span class="value">github.com/yourname</span>
+                <a
+                  class="value"
+                  id="profile-github"
+                  href="https://github.com/yourname"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  >github.com/yourname</a
+                >
               </li>
               <li>
                 <span class="label">LinkedIn</span>
-                <span class="value">linkedin.com/in/yourname</span>
+                <a
+                  class="value"
+                  id="profile-linkedin"
+                  href="https://linkedin.com/in/yourname"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  >linkedin.com/in/yourname</a
+                >
               </li>
             </ul>
 
@@ -920,6 +940,7 @@
       </div>
     </footer>
 
+    <script src="/js/profile.js"></script>
     <script src="/js/main.js" th:src="@{/js/main.js}"></script>
     <script>
       // 讓錨點跳轉更順（不影響 prefers-reduced-motion）
