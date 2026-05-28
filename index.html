@@ -629,6 +629,63 @@
         margin: 6px 0 0;
       }
 
+      /* Contact form */
+      .form {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .field input,
+      .field textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        outline: none;
+      }
+      .field input:focus,
+      .field textarea:focus {
+        box-shadow: var(--ring);
+        border-color: rgba(124, 92, 255, 0.42);
+      }
+      .field textarea {
+        min-height: 130px;
+        resize: vertical;
+      }
+      .status {
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+      }
+      .status[data-kind="success"] {
+        border-color: rgba(45, 212, 191, 0.5);
+        color: rgba(45, 212, 191, 0.95);
+        background: rgba(45, 212, 191, 0.08);
+      }
+      .status[data-kind="warn"] {
+        border-color: rgba(251, 191, 36, 0.55);
+        color: rgba(251, 191, 36, 0.95);
+        background: rgba(251, 191, 36, 0.08);
+      }
+      .status[data-kind="error"] {
+        border-color: rgba(239, 68, 68, 0.5);
+        color: rgba(239, 68, 68, 0.95);
+        background: rgba(239, 68, 68, 0.08);
+      }
+
       /* Reduced motion */
       @media (prefers-reduced-motion: reduce) {
         * {
@@ -932,6 +989,88 @@
       </div>
     </section>
 
+    <!-- Serverless Side Project：聯絡表單（DynamoDB + Lambda） -->
+    <section class="section" id="contact">
+      <div class="container">
+        <h2 class="section-title">聯絡我（Serverless Contact Form）</h2>
+        <p class="section-subtitle">
+          這個表單使用 API Gateway + Lambda + DynamoDB（On-Demand）實作，展示
+          Serverless、省錢、與基本防刷。
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>傳訊息給我</h3>
+            <form class="form" id="contact-form">
+              <div class="field">
+                <label for="c-name">姓名</label>
+                <input id="c-name" name="name" autocomplete="name" required />
+              </div>
+              <div class="field">
+                <label for="c-email">Email</label>
+                <input
+                  id="c-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="c-company">公司 / 團隊（選填）</label>
+                <input id="c-company" name="company" autocomplete="organization" />
+              </div>
+              <div class="field">
+                <label for="c-message">訊息</label>
+                <textarea id="c-message" name="message" required></textarea>
+              </div>
+
+              <!-- Honeypot：人類看不到，機器人常會填 -->
+              <div
+                style="
+                  position: absolute;
+                  left: -10000px;
+                  top: auto;
+                  width: 1px;
+                  height: 1px;
+                  overflow: hidden;
+                "
+              >
+                <label for="c-website">Website</label>
+                <input
+                  id="c-website"
+                  name="website"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                <button type="submit" class="btn btn-primary">送出</button>
+                <a class="btn btn-outline" href="/admin.html">管理端（Demo）</a>
+              </div>
+            </form>
+            <div class="status" id="contact-status" data-kind="info">
+              你可以先部署 `infra/` 的 API，再把 `js/profile.js` 的
+              `contactApiUrl` 貼上來。
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>這個 side project 展示了什麼？</h3>
+            <ul class="bullets">
+              <li><b>Serverless</b>：HTTP API + Lambda + DynamoDB</li>
+              <li>
+                <b>省錢</b>：DynamoDB On-Demand、Lambda arm64、沒有流量幾乎零成本
+              </li>
+              <li><b>安全</b>：CORS（可限制網域）、Honeypot、防刷限流</li>
+              <li><b>可觀測</b>：X-Ray Tracing（可延伸 CloudWatch Dashboard）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 頁尾 -->
     <footer class="footer">
       <div class="container">
@@ -941,51 +1080,7 @@
     </footer>
 
     <script src="/js/profile.js"></script>
+    <script src="/js/site.js"></script>
     <script src="/js/main.js" th:src="@{/js/main.js}"></script>
-    <script>
-      // 讓錨點跳轉更順（不影響 prefers-reduced-motion）
-      document.addEventListener("click", (e) => {
-        const a =
-          e.target && e.target.closest
-            ? e.target.closest('a[href^="#"]')
-            : null;
-        if (!a) return;
-        const id = a.getAttribute("href");
-        if (!id || id.length < 2) return;
-        const el = document.querySelector(id);
-        if (!el) return;
-        e.preventDefault();
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-
-      // 訪客計數（API Gateway /counter）
-      const apiUrl =
-        "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter";
-
-      async function getVisitorCount() {
-        const el = document.getElementById("v-count");
-        if (!el) return;
-
-        try {
-          const response = await fetch(apiUrl, {
-            method: "GET",
-            headers: { Accept: "application/json" },
-            cache: "no-store",
-          });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-          const data = await response.json();
-          el.innerText =
-            data && typeof data.count !== "undefined"
-              ? String(data.count)
-              : "—";
-        } catch (error) {
-          console.error("撈取訪客計數失敗:", error);
-          el.innerText = "系統維護中";
-        }
-      }
-
-      window.addEventListener("DOMContentLoaded", getVisitorCount);
-    </script>
   </body>
 </html>

@@ -26,7 +26,14 @@ jobs:
     # 3. 同步本地檔案到 S3，並同步刪除 S3 上已經被本地移除的檔案 (--delete)
     - name: 同步網頁檔案至 S3 儲存桶
       run: |
-        aws s3 sync . s3://azhe-cloud-resume-bucket-2026 --delete --exclude ".git*" --exclude "README.md"
+        # 只部署「靜態網站」檔案，避免把 infra/.github 等原始碼同步到公開桶
+        aws s3 sync . s3://azhe-cloud-resume-bucket-2026 --delete \
+          --exclude "*" \
+          --include "index.html" \
+          --include "admin.html" \
+          --include "js/*" \
+          --include "images/*" \
+          --include "assets/*"
 
     # 4. 透過 AWS CLI 自動建立 CloudFront 快取失效判定，讓全球節點即時同步最新網頁
     - name: 清除 CloudFront 邊緣節點快取

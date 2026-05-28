@@ -6,6 +6,10 @@ window.__PROFILE__ = {
   email: "jjluo0106@gamil.com",
   github: "https://github.com/yourname",
   linkedin: "https://linkedin.com/in/yourname",
+  // 將下列 API 改成你部署後的 HTTP API 端點
+  counterApiUrl: "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter",
+  contactApiUrl: "", // 例如：https://xxxx.execute-api.us-east-1.amazonaws.com/contact
+  adminMessagesApiUrl: "", // 例如：https://xxxx.execute-api.us-east-1.amazonaws.com/admin/messages
 };
 
 function setText(id, value) {

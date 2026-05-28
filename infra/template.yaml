@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Resume website - serverless side project (contact form + admin list)
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures: [arm64]
+    Timeout: 10
+    MemorySize: 128
+    Tracing: Active
+
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Default: "*"
+    Description: CORS allowed origin (set to your CloudFront domain for production)
+  AdminKey:
+    Type: String
+    NoEcho: true
+    Default: "change-me"
+    Description: Simple admin key for /admin/messages (put a strong value)
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowHeaders:
+          - content-type
+          - x-admin-key
+        AllowMethods:
+          - GET
+          - POST
+
+  AppTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      SSESpecification:
+        SSEEnabled: true
+
+  SubmitContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src
+      Handler: submit-contact.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref AppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AppTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /contact
+            Method: POST
+
+  ListMessagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src
+      Handler: list-messages.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref AppTable
+          ADMIN_KEY: !Ref AdminKey
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref AppTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /admin/messages
+            Method: GET
+
+Outputs:
+  ApiBaseUrl:
+    Description: Base URL for your HTTP API
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  ContactEndpoint:
+    Description: POST contact endpoint
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/contact"
+  AdminMessagesEndpoint:
+    Description: GET admin messages endpoint
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/admin/messages"
