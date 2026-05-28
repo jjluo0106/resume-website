@@ -1,40 +1,123 @@
 <!doctype html>
-<html lang="zh-TW">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>我的雲端自我介紹</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首頁 - 作品網站</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
   </head>
   <body>
-    <h1>你好，我是阿哲！</h1>
-    <p>這是一個部署在 AWS 上的 Serverless 自我介紹網站。</p>
-    <p>目前訪客瀏覽次數：<span id="v-count">載入中...</span></p>
+    <!-- 導航列 -->
+    <nav class="navbar">
+      <div class="container">
+        <a th:href="@{/}" class="logo">我的作品集</a>
+        <ul class="nav-menu">
+          <li><a th:href="@{/}" class="active">首頁</a></li>
+          <li><a th:href="@{/projects}">作品</a></li>
+          <li><a th:href="@{/about}">關於</a></li>
+          <li><a th:href="@{/contact}">聯絡</a></li>
+          <li><a th:href="@{/admin}" class="admin-link">管理</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <script>
-      // 定義你的 API Gateway 網址 (記得後面要加 /counter)
-      const apiUrl =
-        "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter";
+    <!-- Hero 區塊 -->
+    <section class="hero">
+      <div class="container">
+        <h1>歡迎來到我的作品集</h1>
+        <p class="subtitle">Java 工程師 | 全端開發者 | 技術愛好者</p>
+        <div class="hero-buttons">
+          <a th:href="@{/projects}" class="btn btn-primary">查看作品</a>
+          <a th:href="@{/contact}" class="btn btn-secondary">聯絡我</a>
+        </div>
+      </div>
+    </section>
 
-      async function getVisitorCount() {
-        try {
-          // 使用原生 Fetch API 發送 GET 請求
-          const response = await fetch(apiUrl);
-          if (!response.ok) {
-            throw new Error("網路回應不成功");
-          }
+    <!-- 精選作品區塊 -->
+    <section class="featured-projects">
+      <div class="container">
+        <h2 class="section-title">精選作品</h2>
 
-          // 解析 JSON 回應
-          const data = await response.json();
+        <div
+          th:if="${featuredProjects != null and !featuredProjects.isEmpty()}"
+          class="projects-grid"
+        >
+          <div th:each="project : ${featuredProjects}" class="project-card">
+            <div class="project-image">
+              <img
+                th:src="${project.imageUrl != null ? project.imageUrl : '/images/placeholder.jpg'}"
+                th:alt="${project.title}"
+              />
+            </div>
+            <div class="project-content">
+              <h3 th:text="${project.title}">專案標題</h3>
+              <p th:text="${project.description}">專案描述</p>
+              <div class="project-tech" th:if="${project.technologies != null}">
+                <span
+                  class="tech-tag"
+                  th:each="tech : ${#strings.arraySplit(project.technologies, ',')}"
+                  th:text="${tech}"
+                  >技術</span
+                >
+              </div>
+              <a
+                th:href="@{/projects/{id}(id=${project.id})}"
+                class="btn btn-small"
+                >查看詳情</a
+              >
+            </div>
+          </div>
+        </div>
 
-          // 將網頁上 id 為 v-count 的元素替換為後端傳回的數字
-          document.getElementById("v-count").innerText = data.count;
-        } catch (error) {
-          console.error("撈取訪客計數失敗:", error);
-          document.getElementById("v-count").innerText = "系統維護中";
-        }
-      }
+        <div
+          th:if="${featuredProjects == null or featuredProjects.isEmpty()}"
+          class="empty-state"
+        >
+          <p>
+            目前沒有精選作品，請前往<a th:href="@{/admin/projects}">管理後台</a
+            >新增專案。
+          </p>
+        </div>
 
-      // 當網頁完全載入後，立刻執行此函式
-      window.onload = getVisitorCount;
-    </script>
+        <div class="text-center" style="margin-top: 2rem">
+          <a th:href="@{/projects}" class="btn btn-outline">查看所有作品</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 技能區塊 -->
+    <section class="skills">
+      <div class="container">
+        <h2 class="section-title">技術棧</h2>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <h3>後端開發</h3>
+            <p>Java, Spring Boot, Spring MVC, JPA/Hibernate</p>
+          </div>
+          <div class="skill-item">
+            <h3>前端開發</h3>
+            <p>HTML, CSS, JavaScript, Thymeleaf</p>
+          </div>
+          <div class="skill-item">
+            <h3>資料庫</h3>
+            <p>MySQL, H2, PostgreSQL</p>
+          </div>
+          <div class="skill-item">
+            <h3>工具與部署</h3>
+            <p>Git, Maven, Docker, Linux</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 我的作品集. All rights reserved.</p>
+        <p>使用 Spring Boot + Thymeleaf 建立</p>
+      </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
   </body>
 </html>
