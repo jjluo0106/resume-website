@@ -15,11 +15,18 @@ Parameters:
     Type: String
     Default: "*"
     Description: CORS allowed origin (set to your CloudFront domain for production)
-  AdminKey:
+  CognitoDomainPrefix:
     Type: String
-    NoEcho: true
-    Default: "change-me"
-    Description: Simple admin key for /admin/messages (put a strong value)
+    Default: "resume-admin-auth"
+    Description: Cognito hosted UI domain prefix (must be globally unique in region)
+  AdminCallbackUrl:
+    Type: String
+    Default: "http://localhost:5500/admin/index.html"
+    Description: OAuth callback URL (e.g. https://www.azhe.uk/admin/index.html)
+  AdminLogoutUrl:
+    Type: String
+    Default: "http://localhost:5500/admin/index.html"
+    Description: OAuth logout redirect URL (e.g. https://www.azhe.uk/admin/index.html)
 
 Resources:
   HttpApi:
@@ -30,10 +37,18 @@ Resources:
           - !Ref AllowedOrigin
         AllowHeaders:
           - content-type
-          - x-admin-key
+          - authorization
         AllowMethods:
           - GET
           - POST
+      Auth:
+        Authorizers:
+          CognitoJwt:
+            JwtConfiguration:
+              audience:
+                - !Ref AdminUserPoolClient
+              issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${AdminUserPool}"
+            IdentitySource: "$request.header.Authorization"
 
   AppTable:
     Type: AWS::DynamoDB::Table
@@ -82,7 +97,6 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref AppTable
-          ADMIN_KEY: !Ref AdminKey
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref AppTable
@@ -93,6 +107,50 @@ Resources:
             ApiId: !Ref HttpApi
             Path: /admin/messages
             Method: GET
+            Auth:
+              Authorizer: CognitoJwt
+
+  AdminUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: resume-website-admin
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  AdminUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref AdminUserPool
+      ClientName: resume-website-admin-web
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - openid
+        - email
+        - profile
+      CallbackURLs:
+        - !Ref AdminCallbackUrl
+      LogoutURLs:
+        - !Ref AdminLogoutUrl
+
+  AdminUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomainPrefix
+      UserPoolId: !Ref AdminUserPool
 
 Outputs:
   ApiBaseUrl:
@@ -104,3 +162,12 @@ Outputs:
   AdminMessagesEndpoint:
     Description: GET admin messages endpoint
     Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/admin/messages"
+  AdminUserPoolId:
+    Description: Cognito User Pool ID for admin login
+    Value: !Ref AdminUserPool
+  AdminUserPoolClientId:
+    Description: Cognito App Client ID for admin login
+    Value: !Ref AdminUserPoolClient
+  AdminHostedUiBaseUrl:
+    Description: Cognito Hosted UI base URL
+    Value: !Sub "https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com"

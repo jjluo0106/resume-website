@@ -157,28 +157,28 @@
       <div class="topbar">
         <div class="title">
           <h1>管理端｜聯絡表單訊息</h1>
-          <p>此頁面會呼叫 Serverless API（需要 `x-admin-key`）。</p>
+          <p>
+            此頁面會呼叫 Serverless API（使用 Cognito 登入，並用 JWT 保護
+            `/admin/messages`）。
+          </p>
         </div>
         <div class="row">
           <a class="btn" href="/#contact">回首頁</a>
+          <button class="btn" id="login">登入</button>
+          <button class="btn" id="logout" style="display: none">登出</button>
           <button class="btn btn-primary" id="reload">重新載入</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="row">
-          <input
-            id="admin-key"
-            placeholder="輸入 Admin Key（會存在本機瀏覽器）"
-          />
-        </div>
+        <div class="status" id="auth-status">檢查登入狀態中…</div>
         <div class="status" id="status">尚未載入</div>
         <div class="list" id="list"></div>
       </div>
     </div>
 
     <script src="/js/profile.js"></script>
-    <script src="/js/admin.js"></script>
+    <script type="module" src="/js/admin.js"></script>
   </body>
 </html>
 

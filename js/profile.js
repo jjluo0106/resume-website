@@ -10,6 +10,15 @@ window.__PROFILE__ = {
   counterApiUrl: "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter",
   contactApiUrl: "", // 例如：https://xxxx.execute-api.us-east-1.amazonaws.com/contact
   adminMessagesApiUrl: "", // 例如：https://xxxx.execute-api.us-east-1.amazonaws.com/admin/messages
+  // Cognito（管理端登入）
+  // 部署 infra/ 後，把輸出的 Hosted UI 網域、ClientId 填到這裡。
+  cognitoAdminAuth: {
+    region: "us-east-1",
+    domainPrefix: "", // 例如：resume-admin-auth（需與 SAM 參數 CognitoDomainPrefix 一致）
+    clientId: "", // 例如：xxxxxxxxxxxxxxxxxxxxxxxxxx
+    redirectUri: "https://www.azhe.uk/admin/index.html",
+    logoutUri: "https://www.azhe.uk/admin/index.html",
+  },
 };
 
 function setText(id, value) {

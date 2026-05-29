@@ -4,15 +4,10 @@ import { ddb, json, TABLE_NAME } from "./_shared.mjs";
 export async function handler(event) {
   if (!TABLE_NAME) return json(500, { message: "Server not configured" });
 
-  const expected = process.env.ADMIN_KEY || "";
-  const provided =
-    event?.headers?.["x-admin-key"] ||
-    event?.headers?.["X-Admin-Key"] ||
-    event?.headers?.["x-admin-key".toUpperCase()] ||
-    "";
-  if (!expected || provided !== expected) {
-    return json(401, { message: "Unauthorized" });
-  }
+  // Protected by HTTP API JWT authorizer (Cognito). This is a defensive check in
+  // case the route auth config is accidentally removed.
+  const claims = event?.requestContext?.authorizer?.jwt?.claims;
+  if (!claims) return json(401, { message: "Unauthorized" });
 
   const limitRaw =
     event?.queryStringParameters?.limit || event?.queryStringParameters?.["limit"];

@@ -17,22 +17,23 @@ function fmtTime(iso) {
   }
 }
 
+import { ensureLoggedIn, startLogin, logout } from "./cognito-auth.js";
+
 async function loadMessages() {
   const statusEl = document.getElementById("status");
   const listEl = document.getElementById("list");
-  const keyInput = document.getElementById("admin-key");
   const apiUrl = window.__PROFILE__?.adminMessagesApiUrl;
 
-  if (!statusEl || !listEl || !keyInput) return;
+  if (!statusEl || !listEl) return;
   if (!apiUrl) {
     statusEl.textContent =
       "尚未設定 adminMessagesApiUrl（請在 js/profile.js 填入部署後的端點）。";
     return;
   }
 
-  const adminKey = String(keyInput.value || "").trim();
-  if (!adminKey) {
-    statusEl.textContent = "請先輸入 Admin Key。";
+  const auth = await ensureLoggedIn();
+  if (!auth.ok || !auth.token) {
+    statusEl.textContent = "請先登入（Cognito）。";
     return;
   }
 
@@ -42,11 +43,14 @@ async function loadMessages() {
   try {
     const res = await fetch(`${apiUrl}?limit=30`, {
       method: "GET",
-      headers: { "x-admin-key": adminKey, Accept: "application/json" },
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+        Accept: "application/json",
+      },
       cache: "no-store",
     });
     if (res.status === 401) {
-      statusEl.textContent = "Admin Key 不正確（401）。";
+      statusEl.textContent = "未授權（401）。請重新登入。";
       return;
     }
     if (!res.ok) {
@@ -87,20 +91,22 @@ async function loadMessages() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const keyInput = document.getElementById("admin-key");
+  const loginBtn = document.getElementById("login");
+  const logoutBtn = document.getElementById("logout");
   const reloadBtn = document.getElementById("reload");
-  if (!keyInput || !reloadBtn) return;
+  if (!reloadBtn) return;
 
-  const saved = localStorage.getItem("resume_admin_key") || "";
-  if (saved) keyInput.value = saved;
-
-  keyInput.addEventListener("change", () => {
-    localStorage.setItem("resume_admin_key", String(keyInput.value || ""));
-  });
+  if (loginBtn) loginBtn.addEventListener("click", startLogin);
+  if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
   reloadBtn.addEventListener("click", loadMessages);
 
-  // auto load if key exists
-  if (keyInput.value) loadMessages();
+  // try auto-login if redirected back with code/token
+  ensureLoggedIn().then((r) => {
+    const authed = Boolean(r?.ok && r?.token);
+    if (loginBtn) loginBtn.style.display = authed ? "none" : "inline-flex";
+    if (logoutBtn) logoutBtn.style.display = authed ? "inline-flex" : "none";
+    if (authed) loadMessages();
+  });
 });
 
