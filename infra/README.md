@@ -20,6 +20,7 @@
 - 設定好 AWS credentials（或用 GitHub Actions OIDC）
 
 在 `infra/` 資料夾執行：
+，，
 
 ```bash
 sam build
@@ -62,4 +63,3 @@ curl "<AdminMessagesEndpoint>?limit=30" -H "x-admin-key: <你的AdminKey>"
 - 把 `AllowedOrigin` 設為你的實際網域
 - 改用 **JWT（Cognito）** 或 **IAM** 來保護管理端
 - 前端加 reCAPTCHA / Turnstile
-

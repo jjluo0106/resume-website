@@ -183,6 +183,57 @@
         color: var(--faint);
       }
 
+      /* SSL trust badge */
+      .ssl-trust-bar {
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(
+          90deg,
+          rgba(45, 212, 191, 0.1),
+          rgba(35, 198, 255, 0.06)
+        );
+      }
+      .ssl-trust-bar .container {
+        display: flex;
+        justify-content: center;
+        padding: 8px 0 10px;
+      }
+      .ssl-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(45, 212, 191, 0.35);
+        background: rgba(45, 212, 191, 0.08);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+        text-align: left;
+      }
+      .ssl-badge strong {
+        color: var(--text);
+        font-weight: 750;
+      }
+      .ssl-badge .ssl-lock {
+        flex: 0 0 auto;
+        width: 18px;
+        height: 18px;
+        color: var(--success);
+      }
+      .ssl-badge .ssl-domain {
+        color: var(--success);
+        font-weight: 650;
+        letter-spacing: 0.02em;
+      }
+      @media (max-width: 560px) {
+        .ssl-badge {
+          flex-wrap: wrap;
+          justify-content: center;
+          border-radius: var(--radius2);
+          font-size: 12px;
+        }
+      }
+
       /* Hero */
       .hero {
         padding: 54px 0 14px;
@@ -716,6 +767,44 @@
         </ul>
       </div>
     </nav>
+
+    <div class="ssl-trust-bar" role="region" aria-label="網站安全連線說明">
+      <div class="container">
+        <p class="ssl-badge">
+          <svg
+            class="ssl-lock"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M7 10V8a5 5 0 0 1 10 0v2"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <rect
+              x="5"
+              y="10"
+              width="14"
+              height="11"
+              rx="2"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <circle cx="12" cy="15" r="1.5" fill="currentColor" />
+          </svg>
+          <span>
+            <strong>SSL 安全連線</strong>
+            · 此網站透過
+            <strong>Cloudflare</strong>
+            提供 HTTPS 加密（瀏覽器網址列左側會顯示鎖頭圖示）· 網域：
+            <span class="ssl-domain">www.azhe.uk</span>
+          </span>
+        </p>
+      </div>
+    </div>
 
     <!-- Hero 區塊 -->
     <section class="hero">
