@@ -1,0 +1,13 @@
+version = 0.1
+
+[default.build.parameters]
+use_container = true
+
+[default.deploy.parameters]
+stack_name = "resume-website-api"
+resolve_s3 = true
+s3_prefix = "resume-website-api"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "AllowedOrigin=\"https://www.azhe.uk\" CognitoDomainPrefix=\"azhe-resume-admin\" AdminCallbackUrl=\"https://www.azhe.uk/admin/index.html\" AdminLogoutUrl=\"https://www.azhe.uk/admin/index.html\""

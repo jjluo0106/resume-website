@@ -30,7 +30,6 @@ jobs:
         aws s3 sync . s3://azhe-cloud-resume-bucket-2026 --delete \
           --exclude "*" \
           --include "index.html" \
-          --include "admin.html" \
           --include "admin/*" \
           --include "js/*" \
           --include "images/*" \
