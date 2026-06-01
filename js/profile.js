@@ -8,13 +8,13 @@ window.__PROFILE__ = {
   linkedin: "https://linkedin.com/in/yourname",
   // 將下列 API 改成你部署後的 HTTP API 端點
   counterApiUrl: "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter",
-  contactApiUrl: "https://dqxtv2fwq5.execute-api.us-east-1.amazonaws.com/contact",
-  adminMessagesApiUrl: "https://dqxtv2fwq5.execute-api.us-east-1.amazonaws.com/admin/messages",
+  contactApiUrl: "https://9u0n36y78i.execute-api.us-east-1.amazonaws.com/contact",
+  adminMessagesApiUrl: "https://9u0n36y78i.execute-api.us-east-1.amazonaws.com/admin/messages",
   // Cognito（管理端登入）
   cognitoAdminAuth: {
     region: "us-east-1",
     domainPrefix: "azhe-resume-admin",
-    clientId: "4u8fiffhm44p0gaev6fsoarv13",
+    clientId: "23k13s1veqhu36nqjpcrnp4jtd",
     redirectUri: "https://www.azhe.uk/admin/index.html",
     logoutUri: "https://www.azhe.uk/admin/index.html",
   },
