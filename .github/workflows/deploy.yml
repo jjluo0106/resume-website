@@ -31,6 +31,7 @@ jobs:
           --exclude "*" \
           --include "index.html" \
           --include "admin/*" \
+          --include "css/*" \
           --include "js/*" \
           --include "images/*" \
           --include "assets/*"
