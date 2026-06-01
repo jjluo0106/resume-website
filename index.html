@@ -10,6 +10,7 @@
     />
     <meta name="color-scheme" content="light dark" />
 
+    <link rel="stylesheet" href="/css/base.css" />
     <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}" />
   </head>
   <body>
@@ -23,7 +24,7 @@
           <li><a href="/" th:href="@{/}" class="active">首頁</a></li>
           <li><a href="/projects" th:href="@{/projects}">作品</a></li>
           <li><a href="/about" th:href="@{/about}">關於</a></li>
-          <li><a href="/#contact">聯絡</a></li>
+          <li><a href="/#contact">聯絡我</a></li>
           <li>
             <a href="/admin/index.html" class="admin-link">管理</a>
           </li>
@@ -93,7 +94,6 @@
               <a href="/projects" th:href="@{/projects}" class="btn btn-primary"
                 >查看作品</a
               >
-              <a href="/#contact" class="btn btn-secondary">聯絡我</a>
               <a href="#aws" class="btn btn-outline">AWS 能力一覽</a>
             </div>
           </div>
@@ -118,7 +118,10 @@
               </li>
               <li>
                 <span class="label">Email</span>
-                <a class="value" id="profile-email" href="mailto:you@example.com"
+                <a
+                  class="value"
+                  id="profile-email"
+                  href="mailto:you@example.com"
                   >you@example.com</a
                 >
               </li>
@@ -368,7 +371,11 @@
               </div>
               <div class="field">
                 <label for="c-company">公司 / 團隊（選填）</label>
-                <input id="c-company" name="company" autocomplete="organization" />
+                <input
+                  id="c-company"
+                  name="company"
+                  autocomplete="organization"
+                />
               </div>
               <div class="field">
                 <label for="c-message">訊息</label>
@@ -397,7 +404,9 @@
 
               <div style="display: flex; gap: 10px; flex-wrap: wrap">
                 <button type="submit" class="btn btn-primary">送出</button>
-                <a class="btn btn-outline" href="/admin/index.html">管理端（Demo）</a>
+                <a class="btn btn-outline" href="/admin/index.html"
+                  >管理端（Demo）</a
+                >
               </div>
             </form>
             <div class="status" id="contact-status" data-kind="info">
@@ -411,10 +420,13 @@
             <ul class="bullets">
               <li><b>Serverless</b>：HTTP API + Lambda + DynamoDB</li>
               <li>
-                <b>省錢</b>：DynamoDB On-Demand、Lambda arm64、沒有流量幾乎零成本
+                <b>省錢</b>：DynamoDB On-Demand、Lambda
+                arm64、沒有流量幾乎零成本
               </li>
               <li><b>安全</b>：CORS（可限制網域）、Honeypot、防刷限流</li>
-              <li><b>可觀測</b>：X-Ray Tracing（可延伸 CloudWatch Dashboard）</li>
+              <li>
+                <b>可觀測</b>：X-Ray Tracing（可延伸 CloudWatch Dashboard）
+              </li>
             </ul>
           </div>
         </div>
