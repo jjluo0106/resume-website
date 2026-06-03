@@ -106,3 +106,34 @@ curl "<AdminMessagesEndpoint>?limit=30" \
 - **管理端**：Cognito JWT（取代舊版 `x-admin-key`）
 
 可再加強：reCAPTCHA / Turnstile、WAF、Cognito MFA。
+
+## 遷移到另一個 AWS 帳號（例如 jjluo2）
+
+Cognito User Pool **無法跨帳號搬家**，要在新帳號重新 `sam deploy`。
+
+**重要：** Cognito 網域前綴 `azhe-resume-admin` 在同一 region **全域唯一**。若舊帳號還佔著，新帳號 deploy 會失敗，需**先刪舊 stack** 或改用新前綴。
+
+### 步驟
+
+1. **在新帳號建立 IAM 使用者 + Access Key**（jjluo2 / `939141785878`）
+2. **設定本機 profile：**
+   ```powershell
+   aws configure --profile jjluo2
+   aws sts get-caller-identity --profile jjluo2
+   ```
+   確認 `Account` 為 `939141785878`。
+3. **刪除舊帳號 stack（釋放 Cognito 網域）：**
+   ```powershell
+   sam delete --stack-name resume-website-api --profile default
+   ```
+4. **在新帳號部署：**
+   ```powershell
+   cd infra
+   sam build --use-container --profile jjluo2
+   sam deploy --profile jjluo2
+   ```
+5. **建立管理員：**
+   ```powershell
+   aws cognito-idp admin-create-user --profile jjluo2 ...
+   ```
+6. **更新 `js/profile.js` 的 API URL / clientId**，push 前端。

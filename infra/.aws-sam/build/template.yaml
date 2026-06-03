@@ -1,0 +1,184 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Resume website - serverless side project (contact form + admin list)
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+    - arm64
+    Timeout: 10
+    MemorySize: 128
+    Tracing: Active
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Default: '*'
+    Description: CORS allowed origin (set to your CloudFront domain for production)
+  CognitoDomainPrefix:
+    Type: String
+    Default: resume-admin-auth
+    Description: Cognito hosted UI domain prefix (must be globally unique in region)
+  AdminCallbackUrl:
+    Type: String
+    Default: http://localhost:5500/admin/index.html
+    Description: OAuth callback URL (e.g. https://www.azhe.uk/admin/index.html)
+  AdminLogoutUrl:
+    Type: String
+    Default: http://localhost:5500/admin/index.html
+    Description: OAuth logout redirect URL (e.g. https://www.azhe.uk/admin/index.html)
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+        - Ref: AllowedOrigin
+        AllowHeaders:
+        - content-type
+        - authorization
+        AllowMethods:
+        - GET
+        - POST
+      Auth:
+        Authorizers:
+          CognitoJwt:
+            JwtConfiguration:
+              audience:
+              - Ref: AdminUserPoolClient
+              issuer:
+                Fn::Sub: https://cognito-idp.${AWS::Region}.amazonaws.com/${AdminUserPool}
+            IdentitySource: $request.header.Authorization
+  AppTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      SSESpecification:
+        SSEEnabled: true
+  SubmitContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SubmitContactFunction
+      Handler: submit-contact.handler
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: AppTable
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: AppTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApi
+            Path: /contact
+            Method: POST
+    Metadata:
+      SamResourceId: SubmitContactFunction
+  ListMessagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ListMessagesFunction
+      Handler: list-messages.handler
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: AppTable
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: AppTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApi
+            Path: /admin/messages
+            Method: GET
+            Auth:
+              Authorizer: CognitoJwt
+    Metadata:
+      SamResourceId: ListMessagesFunction
+  AdminUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: resume-website-admin
+      UsernameAttributes:
+      - email
+      AutoVerifiedAttributes:
+      - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+  AdminUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: AdminUserPool
+      ClientName: resume-website-admin-web
+      GenerateSecret: false
+      SupportedIdentityProviders:
+      - COGNITO
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+      - code
+      AllowedOAuthScopes:
+      - openid
+      - email
+      - profile
+      CallbackURLs:
+      - Ref: AdminCallbackUrl
+      LogoutURLs:
+      - Ref: AdminLogoutUrl
+  AdminUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain:
+        Ref: CognitoDomainPrefix
+      UserPoolId:
+        Ref: AdminUserPool
+Outputs:
+  ApiBaseUrl:
+    Description: Base URL for your HTTP API
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com
+  ContactEndpoint:
+    Description: POST contact endpoint
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/contact
+  AdminMessagesEndpoint:
+    Description: GET admin messages endpoint
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/admin/messages
+  AdminUserPoolId:
+    Description: Cognito User Pool ID for admin login
+    Value:
+      Ref: AdminUserPool
+  AdminUserPoolClientId:
+    Description: Cognito App Client ID for admin login
+    Value:
+      Ref: AdminUserPoolClient
+  AdminHostedUiBaseUrl:
+    Description: Cognito Hosted UI base URL
+    Value:
+      Fn::Sub: https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com
