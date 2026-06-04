@@ -548,3 +548,21 @@
   gap: 10px;
   margin-top: 12px;
 }
+
+/* Stairfall embed */
+.stairfall-section .stairfall-embed {
+  padding: 0;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.stairfall-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: min(820px, 92vh);
+  border: 0;
+  background: #1a1a2e;
+}
+.stairfall-hint {
+  margin-top: 12px;
+  text-align: center;
+}

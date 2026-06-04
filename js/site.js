@@ -92,9 +92,22 @@ function contactForm() {
   });
 }
 
+function initStairfallEmbed() {
+  const iframe = document.getElementById("stairfall-iframe");
+  const openLink = document.getElementById("stairfall-open-link");
+  const url = window.__PROFILE__?.stairfallGameUrl?.trim();
+  if (!url) return;
+  if (iframe) iframe.src = url;
+  if (openLink) {
+    openLink.href = url;
+    openLink.removeAttribute("aria-disabled");
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   smoothAnchorScroll();
   getVisitorCount();
   contactForm();
+  initStairfallEmbed();
 });
 

@@ -24,7 +24,8 @@
           <li><a href="/" th:href="@{/}" class="active">首頁</a></li>
           <li><a href="/projects" th:href="@{/projects}">作品</a></li>
           <li><a href="/about" th:href="@{/about}">關於</a></li>
-          <li><a href="/#contact">聯絡我123</a></li>
+          <li><a href="/#stairfall">小遊戲</a></li>
+          <li><a href="/#contact">聯絡我</a></li>
           <li>
             <a href="/admin/index.html" class="admin-link">管理</a>
           </li>
@@ -106,6 +107,7 @@
               <a href="/projects" th:href="@{/projects}" class="btn btn-primary"
                 >查看作品</a
               >
+              <a href="#stairfall" class="btn btn-outline">玩玩小遊戲</a>
               <a href="#aws" class="btn btn-outline">AWS 能力一覽</a>
             </div>
           </div>
@@ -351,6 +353,39 @@
             </ul>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Side Project：小朋友下樓梯（Stairfall on CloudFront） -->
+    <section class="section stairfall-section" id="stairfall">
+      <div class="container">
+        <h2 class="section-title">互動小遊戲 · 小朋友下樓梯</h2>
+        <p class="section-subtitle">
+          NS-Shaft 風格 HTML5 Canvas 小遊戲，獨立部署於
+          <strong>S3 + CloudFront</strong>，全服排行榜使用
+          <strong>API Gateway + Lambda + DynamoDB</strong>。可直接在下方遊玩，或
+          <a
+            id="stairfall-open-link"
+            href="#"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-disabled="true"
+            >另開分頁</a
+          >。
+        </p>
+
+        <div class="stairfall-embed card">
+          <iframe
+            id="stairfall-iframe"
+            title="小朋友下樓梯遊戲"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allow="fullscreen"
+          ></iframe>
+        </div>
+        <p class="note stairfall-hint">
+          操作：← → 或 A D 移動 · 避開紅色尖刺 · R 重新開始
+        </p>
       </div>
     </section>
 

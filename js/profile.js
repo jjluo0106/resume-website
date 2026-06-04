@@ -10,6 +10,8 @@ window.__PROFILE__ = {
   counterApiUrl: "https://en444dsqj3.execute-api.us-east-1.amazonaws.com/counter",
   contactApiUrl: "https://9u0n36y78i.execute-api.us-east-1.amazonaws.com/contact",
   adminMessagesApiUrl: "https://9u0n36y78i.execute-api.us-east-1.amazonaws.com/admin/messages",
+  // 小朋友下樓梯（Stairfall）— 獨立 CloudFront 部署
+  stairfallGameUrl: "https://d3ncgu34f9u088.cloudfront.net",
   // Cognito（管理端登入）
   cognitoAdminAuth: {
     region: "us-east-1",
