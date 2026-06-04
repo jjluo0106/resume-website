@@ -93,15 +93,12 @@ function contactForm() {
 }
 
 function initStairfallEmbed() {
-  const iframe = document.getElementById("stairfall-iframe");
-  const openLink = document.getElementById("stairfall-open-link");
   const url = window.__PROFILE__?.stairfallGameUrl?.trim();
   if (!url) return;
-  if (iframe) iframe.src = url;
-  if (openLink) {
-    openLink.href = url;
-    openLink.removeAttribute("aria-disabled");
-  }
+  const iframe = document.getElementById("stairfall-iframe");
+  const openLink = document.getElementById("stairfall-open-link");
+  if (iframe && !iframe.getAttribute("src")) iframe.src = url;
+  if (openLink) openLink.href = url;
 }
 
 window.addEventListener("DOMContentLoaded", () => {

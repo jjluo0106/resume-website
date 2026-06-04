@@ -558,7 +558,8 @@
 .stairfall-embed iframe {
   display: block;
   width: 100%;
-  min-height: min(820px, 92vh);
+  height: min(860px, 92vh);
+  min-height: 640px;
   border: 0;
   background: #1a1a2e;
 }
