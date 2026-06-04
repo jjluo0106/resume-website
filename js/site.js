@@ -92,19 +92,18 @@ function contactForm() {
   });
 }
 
-function initStairfallEmbed() {
+function initStairfallLinks() {
   const url = window.__PROFILE__?.stairfallGameUrl?.trim();
   if (!url) return;
-  const iframe = document.getElementById("stairfall-iframe");
-  const openLink = document.getElementById("stairfall-open-link");
-  if (iframe && !iframe.getAttribute("src")) iframe.src = url;
-  if (openLink) openLink.href = url;
+  document.querySelectorAll(".stairfall-play-link").forEach((el) => {
+    el.setAttribute("href", url);
+  });
 }
 
 window.addEventListener("DOMContentLoaded", () => {
   smoothAnchorScroll();
   getVisitorCount();
   contactForm();
-  initStairfallEmbed();
+  initStairfallLinks();
 });
 

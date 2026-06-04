@@ -107,7 +107,13 @@
               <a href="/projects" th:href="@{/projects}" class="btn btn-primary"
                 >查看作品</a
               >
-              <a href="#stairfall" class="btn btn-outline">玩玩小遊戲</a>
+              <a
+                href="https://d3ncgu34f9u088.cloudfront.net"
+                class="btn btn-outline stairfall-play-link"
+                target="_blank"
+                rel="noreferrer noopener"
+                >玩玩小遊戲</a
+              >
               <a href="#aws" class="btn btn-outline">AWS 能力一覽</a>
             </div>
           </div>
@@ -363,29 +369,24 @@
         <p class="section-subtitle">
           NS-Shaft 風格 HTML5 Canvas 小遊戲，獨立部署於
           <strong>S3 + CloudFront</strong>，全服排行榜使用
-          <strong>API Gateway + Lambda + DynamoDB</strong>。可直接在下方遊玩，或
-          <a
-            id="stairfall-open-link"
-            href="https://d3ncgu34f9u088.cloudfront.net"
-            target="_blank"
-            rel="noreferrer noopener"
-            >另開分頁</a
-          >。
+          <strong>API Gateway + Lambda + DynamoDB</strong>。
         </p>
 
-        <div class="stairfall-embed card">
-          <iframe
-            id="stairfall-iframe"
-            src="https://d3ncgu34f9u088.cloudfront.net"
-            title="小朋友下樓梯遊戲"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            allow="fullscreen"
-          ></iframe>
+        <div class="card stairfall-cta">
+          <p class="stairfall-cta-desc">
+            點下方連結在新分頁開啟遊戲（全螢幕體驗較佳）。
+          </p>
+          <a
+            href="https://d3ncgu34f9u088.cloudfront.net"
+            class="btn btn-primary stairfall-play-link"
+            target="_blank"
+            rel="noreferrer noopener"
+            >前往遊玩 · 小朋友下樓梯 ↗</a
+          >
+          <p class="note stairfall-hint">
+            操作：← → 或 A D 移動 · 避開紅色尖刺 · R 重新開始
+          </p>
         </div>
-        <p class="note stairfall-hint">
-          操作：← → 或 A D 移動 · 避開紅色尖刺 · R 重新開始
-        </p>
       </div>
     </section>
 

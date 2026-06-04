@@ -549,21 +549,19 @@
   margin-top: 12px;
 }
 
-/* Stairfall embed */
-.stairfall-section .stairfall-embed {
-  padding: 0;
-  overflow: hidden;
+/* Stairfall link CTA */
+.stairfall-cta {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
   margin-top: 8px;
+  padding: 22px;
 }
-.stairfall-embed iframe {
-  display: block;
-  width: 100%;
-  height: min(860px, 92vh);
-  min-height: 640px;
-  border: 0;
-  background: #1a1a2e;
+.stairfall-cta-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
 }
 .stairfall-hint {
-  margin-top: 12px;
-  text-align: center;
+  margin: 0;
 }
